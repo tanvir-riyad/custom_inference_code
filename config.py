@@ -34,5 +34,7 @@ result_dir = 'D:\Plaex\Code\custom-detection\output'
 
 save_plot = 2
 
+print("nothing")
+
 
 
