@@ -20,21 +20,20 @@ else:
 
 batch_size = 6
 img_shape = 256
-epoch = 100
+epochs = 1
 
 train_dir = 'D:\Plaex\Code\custom-detection\data\train'
 test_dir = 'D:\Plaex\Code\custom-detection\data\test'
 
 
-classes = ['background', 'organic', 'plastic_bottle', 'paper', 'pmd']
+classes = ['background', 'organic', 'plastic_bottle', 'paper']
 
-num_class = 5
+num_class = 4
 
 result_dir = 'D:\Plaex\Code\custom-detection\output'
 
 save_plot = 2
 
-print("nothing")
-
-
+SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
+SAVE_MODEL_EPOCH = 2 # save model after these many epochs
 
