@@ -26,8 +26,7 @@ test_images = glob.glob(f"{DIR_TEST}/*")
 print(f"Test instances: {len(test_images)}")
 # classes: 0 index is reserved for background
 CLASSES = [
-    'background', 'Arduino_Nano', 'ESP8266', 'Raspberry_Pi_3', 'Heltec_ESP32_Lora'
-]
+    'background', 'organic', 'plastic_bottle', 'paper']
 # define the detection threshold...
 # ... any detection having score below this will be discarded
 detection_threshold = 0.8
