@@ -34,6 +34,6 @@ result_dir = 'D:\Plaex\Code\custom-detection\output'
 
 save_plot = 2
 
-SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
-SAVE_MODEL_EPOCH = 2 # save model after these many epochs
+SAVE_PLOTS_EPOCH = 2 
+SAVE_MODEL_EPOCH = 2 
 

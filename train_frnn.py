@@ -7,7 +7,7 @@ Created on Mon Aug 15 14:38:47 2022
 
 from config import device, num_class, epochs, result_dir
 from config import SAVE_PLOTS_EPOCH, SAVE_MODEL_EPOCH
-from model import create_model
+from model import detection_model
 from utils import Averager
 from tqdm.auto import tqdm
 from datasets import train_loader, valid_loader
@@ -73,29 +73,19 @@ def validate(valid_data_loader, model):
 
 
 if __name__ == '__main__':
-    # initialize the model and move to the computation device
-    model = create_model(num_classes = num_class)
+    model = detection_model(num_classes = num_class)
     model = model.to(device)
-    # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
-    # define the optimizer
     optimizer = torch.optim.SGD(params, lr=0.001, momentum=0.9, weight_decay=0.0005)
-    # initialize the Averager class
     train_loss_hist = Averager()
     val_loss_hist = Averager()
     train_itr = 1
     val_itr = 1
-    # train and validation loss lists to store loss values of all...
-    # ... iterations till ena and plot graphs for all iterations
     train_loss_list = []
     val_loss_list = []
-    # name to save the trained model with
     MODEL_NAME = 'model'
-    # whether to show transformed images from data loader or not
-    # start the training epochs
     for epoch in range(epochs):
         print(f"\nEPOCH {epoch+1} of {epoch}")
-        # reset the training and validation loss histories for the current epoch
         train_loss_hist.reset()
         val_loss_hist.reset()
         # create two subplots, one for each, training and validation
