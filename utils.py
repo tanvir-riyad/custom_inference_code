@@ -10,6 +10,7 @@ Created on Wed Aug 10 10:46:26 2022
 class Averager:
     
     def __init__(self):
+        
         self.current_total = 0.0
         self.iterations = 0.0
         
@@ -25,6 +26,7 @@ class Averager:
             return 1.0 * self.current_total / self.iterations
     
     def reset(self):
+        
         self.current_total = 0.0
         self.iterations = 0.0
         

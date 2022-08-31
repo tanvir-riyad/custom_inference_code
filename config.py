@@ -20,17 +20,17 @@ else:
 
 batch_size = 6
 img_shape = 256
-epochs = 1
+epochs = 2
 
-train_dir = 'D:\Plaex\Code\custom-detection\data\train'
-test_dir = 'D:\Plaex\Code\custom-detection\data\test'
+train_dir = 'D:\Plaex\Code\custom-detection\data\data_train'
+test_dir  = 'D:\Plaex\Code\custom-detection\data\data_test'
 
 
-classes = ['background', 'organic', 'plastic_bottle', 'paper']
+classes = ['background', 'plastic', 'paper', 'glass']
 
 num_class = 4
 
-result_dir = 'D:\Plaex\Code\custom-detection\output'
+result_dir = 'D:/Plaex/Code/custom-detection/output'
 
 save_plot = 2
 

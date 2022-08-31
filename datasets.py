@@ -13,11 +13,13 @@ import glob as glob
 from xml.etree import ElementTree as et
 from config import classes, img_shape, train_dir, test_dir, batch_size
 from torch.utils.data import Dataset, DataLoader
-from utils import collate_fn, get_train_transform, get_valid_transform
+from utils import collate_fn
+from torchvision import transforms 
 
 
 
 class PlaexDataset(Dataset):
+    
     def __init__(self, dir_path, width, height, clas):
 
         self.dir_path = dir_path
@@ -29,6 +31,7 @@ class PlaexDataset(Dataset):
         self.image_paths = glob.glob(f"{self.dir_path}/*.jpg")
         self.all_images = [image_path.split('/')[-1] for image_path in self.image_paths]
         self.all_images = sorted(self.all_images)
+        
     def __getitem__(self, idx):
         # capture the image name and the full image path
         image_name = self.all_images[idx]
@@ -57,7 +60,7 @@ class PlaexDataset(Dataset):
         for member in root.findall('object'):
             # map the current object name to `classes` list to get...
             # ... the label index and append to `labels` list
-            labels.append(self.classes.index(member.find('name').text))
+            labels.append(self.clas.index(member.find('name').text))
             
             # xmin = left corner x-coordinates
             xmin = int(member.find('bndbox').find('xmin').text)
@@ -78,7 +81,7 @@ class PlaexDataset(Dataset):
             boxes.append([xmin_final, ymin_final, xmax_final, yamx_final])
         
         # bounding box to tensor
-        boxes = torch.as_tensor(boxes, dtype=torch.float32)
+        boxes = torch.as_tensor(boxes , dtype=torch.float32)
         # area of the bounding boxes
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
         # no crowd instances
@@ -93,67 +96,58 @@ class PlaexDataset(Dataset):
         target["iscrowd"] = iscrowd
         image_id = torch.tensor([idx])
         target["image_id"] = image_id
+        convert_to_tensor = transforms.ToTensor()
+        image_resized = convert_to_tensor(image_resized)        
+        
         # apply the image transforms
-        if self.transforms:
-            sample = self.transforms(image = image_resized,
-                                     bboxes = target['boxes'],
-                                     labels = labels)
-            image_resized = sample['image']
-            target['boxes'] = torch.Tensor(sample['bboxes'])
+        # if self.transforms:
+        #     sample = self.transforms(image = image_resized,
+        #                              bboxes = target['boxes'],
+        #                              labels = labels)
+        #     image_resized = sample['image']
+        #     target['boxes'] = torch.Tensor(sample['bboxes'])
             
         return image_resized, target
+    
     def __len__(self):
         return len(self.all_images)
-    
-    
-    
-    
+       
     
 train_dataset = PlaexDataset(train_dir, img_shape, img_shape, classes)
 valid_dataset = PlaexDataset(test_dir, img_shape, img_shape, classes)
-train_loader = DataLoader(
-    train_dataset,
-    batch_size = batch_size,
-    shuffle=True,
-    num_workers=0,
-    collate_fn=collate_fn
-)
-valid_loader = DataLoader(
-    valid_dataset,
-    batch_size = batch_size,
-    shuffle=False,
-    num_workers=0,
-    collate_fn=collate_fn
-)
+train_loader = DataLoader(train_dataset, batch_size = batch_size, shuffle=True,  
+                          num_workers=0, collate_fn=collate_fn)
+test_loader = DataLoader(valid_dataset, batch_size = batch_size, shuffle=False,
+                          num_workers=0,collate_fn=collate_fn)
 print(f"Number of training samples: {len(train_dataset)}")
 print(f"Number of validation samples: {len(valid_dataset)}\n")
 
 
 
-if __name__ == '__main__':
-    # sanity check of the Dataset pipeline with sample visualization
-    dataset = PlaexDataset(
-        train_dir, img_shape, img_shape, classes
-    )
-    print(f"Number of training images: {len(dataset)}")
+# if __name__ == '__main__':
+#     # sanity check of the Dataset pipeline with sample visualization
+#     dataset = PlaexDataset(train_dir, img_shape, img_shape, classes)
+#     print(f"Number of training images: {len(dataset)}")
     
-    # function to visualize a single sample
-    def visualize_sample(image, target):
-        box = target['boxes'][0]
-        label = classes[target['labels']]
-        cv2.rectangle(
-            image, 
-            (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
-            (0, 255, 0), 1
-        )
-        cv2.putText(
-            image, label, (int(box[0]), int(box[1]-5)), 
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
-        )
-        cv2.imshow('Image', image)
-        cv2.waitKey(0)
+#     # function to visualize a single sample
+#     def visualize_sample(image, target):
+#         box = target['boxes'][0]
+#         label = classes[target['labels']]
+#         cv2.rectangle(
+#             image, 
+#             (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
+#             (0, 255, 0), 1
+#         )
+#         cv2.putText(
+#             image, label, (int(box[0]), int(box[1]-5)), 
+#             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
+#         )
+#         cv2.imshow('Image', image)
+#         cv2.waitKey(0)
         
-    NUM_SAMPLES_TO_VISUALIZE = 5
-    for i in range(NUM_SAMPLES_TO_VISUALIZE):
-        image, target = dataset[i]
-        visualize_sample(image, target)
+#     NUM_SAMPLES_TO_VISUALIZE = 5
+#     for i in range(NUM_SAMPLES_TO_VISUALIZE):
+#         image, target = dataset[i]
+#         image = image.numpy().transpose(1, 2, 0).astype(np.uint8).copy() 
+#         print(image.shape)
+#         visualize_sample(image, target)
