@@ -15,6 +15,7 @@ import torch
 import matplotlib.pyplot as plt
 import time
 plt.style.use('ggplot')
+import os
 
 
 
@@ -99,7 +100,7 @@ if __name__ == '__main__':
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch+1}")
         #if (epoch+1) % SAVE_MODEL_EPOCH == 0: # save model after every n epochs
-        torch.save(model.state_dict(), f"{result_dir}/model{epoch+1}.pth")
+        torch.save(model.state_dict(), os.path.join(result_dir, f"/model{epoch+1}.pth")) #f"{result_dir}/model{epoch+1}.pth")
         print('SAVING MODEL COMPLETE...\n')
         
         #if (epoch+1) % SAVE_PLOTS_EPOCH == 0: # save loss plots after n epochs
@@ -109,19 +110,19 @@ if __name__ == '__main__':
         valid_ax.plot(val_loss, color='red')
         valid_ax.set_xlabel('iterations')
         valid_ax.set_ylabel('validation loss')
-        figure_1.savefig(f"{result_dir}/train_loss_{epoch+1}.png")
-        figure_2.savefig(f"{result_dir}/valid_loss_{epoch+1}.png")
+        figure_1.savefig(os.path.join(result_dir, f"/train_loss_{epoch+1}.png"))
+        figure_2.savefig(os.path.join(result_dir, f"/test_loss_{epoch+1}.png"))
         print('SAVING PLOTS COMPLETE...')
             
-        if (epoch+1) == epochs: # save loss plots and model once at the end
-            train_ax.plot(train_loss, color='blue')
-            train_ax.set_xlabel('iterations')
-            train_ax.set_ylabel('train loss')
-            valid_ax.plot(val_loss, color='red')
-            valid_ax.set_xlabel('iterations')
-            valid_ax.set_ylabel('validation loss')
-            figure_1.savefig(f"{result_dir}/train_loss_{epoch+1}.png")
-            figure_2.savefig(f"{result_dir}/valid_loss_{epoch+1}.png")
-            torch.save(model.state_dict(), f"{result_dir}/model{epoch+1}.pth")
+        # if (epoch+1) == epochs: # save loss plots and model once at the end
+        #     train_ax.plot(train_loss, color='blue')
+        #     train_ax.set_xlabel('iterations')
+        #     train_ax.set_ylabel('train loss')
+        #     valid_ax.plot(val_loss, color='red')
+        #     valid_ax.set_xlabel('iterations')
+        #     valid_ax.set_ylabel('validation loss')
+        #     figure_1.savefig(f"{result_dir}/train_loss_{epoch+1}.png")
+        #     figure_2.savefig(f"{result_dir}/valid_loss_{epoch+1}.png")
+        #     torch.save(model.state_dict(), f"{result_dir}/model{epoch+1}.pth")
         
         plt.close('all')

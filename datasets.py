@@ -148,6 +148,6 @@ print(f"Number of validation samples: {len(valid_dataset)}\n")
 #     NUM_SAMPLES_TO_VISUALIZE = 5
 #     for i in range(NUM_SAMPLES_TO_VISUALIZE):
 #         image, target = dataset[i]
-#         image = image.numpy().transpose(1, 2, 0).astype(np.uint8).copy() 
+#         #image = image.numpy().transpose(1, 2, 0).astype(np.uint8).copy() 
 #         print(image.shape)
 #         visualize_sample(image, target)
